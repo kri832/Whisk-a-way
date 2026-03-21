@@ -1,0 +1,51 @@
+.reserv-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+}
+
+.reserv-header {
+  max-width: 560px;
+}
+
+.reserv-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.reserv-grid {
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.reserv-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.reserv-form input,
+.reserv-form select {
+  background: rgba(0, 0, 0, 0.45);
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  padding: 0.5rem 0.9rem;
+  color: var(--color-primary);
+  font-size: 0.85rem;
+}
+
+.reserv-message {
+  font-size: 0.86rem;
+  color: var(--color-muted);
+}
+
+.reserv-submit {
+  align-self: flex-end;
+}
+

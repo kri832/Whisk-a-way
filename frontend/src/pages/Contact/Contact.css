@@ -1,0 +1,78 @@
+.contact-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+}
+
+.contact-header {
+  max-width: 620px;
+}
+
+.contact-layout {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 4fr 1fr;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.contact-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.contact-form input,
+.contact-form textarea {
+  background: rgba(0, 0, 0, 0.45);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  padding: 0.6rem 0.9rem;
+  color: var(--color-primary);
+  font-size: 0.9rem;
+}
+
+.contact-message {
+  font-size: 0.86rem;
+  color: var(--color-muted);
+}
+
+.contact-submit {
+  align-self: flex-end;
+}
+
+.contact-aside h2 {
+  margin-top: 0;
+}
+
+.contact-aside ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--color-muted);
+}
+
+.contact-aside li {
+  margin-bottom: 0.5rem;
+}
+
+.contact-aside strong {
+  color: var(--color-primary);
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .contact-layout {
+    grid-template-columns: 1fr;
+  }
+}
+

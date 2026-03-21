@@ -1,0 +1,40 @@
+Whisk-a-Way – Setup checklist (fix login & empty menu)
+=====================================================
+
+If you see "Unable to sign in" and no menu items, the app is not connected to the backend/database. Follow these steps in order.
+
+□ 1. MongoDB running
+   • Local: brew services start mongodb-community  (or start MongoDB however you installed it)
+   • Cloud: Use MongoDB Atlas and put the connection string in backend/.env as MONGO_URI (see DATABASE_SETUP.md)
+
+□ 2. Backend .env
+   • In backend folder: copy .env.example to .env if you don’t have .env
+   • Set MONGO_URI (e.g. mongodb://localhost:27017/whisk-a-way or your Atlas URI)
+   • Set JWT_SECRET to any long random string
+   • Set PORT=5001  (frontend will call this port)
+
+□ 3. Seed the database (creates users + menu items)
+   • In a terminal:  cd backend
+   • Run:  npm run seed
+   • You should see: "Database seeded successfully"
+   • This creates: admin@whiskaway.com / admin123  and  john@example.com / password123  and menu items
+
+□ 4. Start the backend
+   • In backend folder:  npm start
+   • You should see: "Whisk-a-Way API listening on port 5001"
+   • If you see "Failed to connect to MongoDB", fix step 1 and 2
+
+□ 5. Frontend .env (same port as backend)
+   • In frontend folder, open .env
+   • Set:  REACT_APP_API_URL=http://localhost:5001/api
+   • (Use 5002 if your backend .env has PORT=5002 – the port must match.)
+
+□ 6. Start the frontend
+   • In frontend folder:  npm start
+   • Open http://localhost:3000 and try logging in with john@example.com / password123
+
+□ 7. Check health (optional)
+   • Open http://localhost:5001/api/health in the browser
+   • You should see: {"ok":true,"database":"connected",...}
+
+If login still fails, read the error message on the login page – it will now say whether the server was unreachable or the credentials were wrong.

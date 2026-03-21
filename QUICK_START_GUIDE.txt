@@ -1,0 +1,116 @@
+Whisk-a-Way – Quick Start Guide
+================================
+
+This is the 5‑minute setup guide for running the **Whisk‑a‑Way** app locally.
+
+If you want full details, see `README.md` and `PROJECT_SUMMARY.md`.
+
+1. Prerequisites
+----------------
+
+- Node.js 18+ installed
+- npm (comes with Node)
+- A running MongoDB instance (local or hosted, e.g. MongoDB Atlas)
+
+2. Project Structure
+--------------------
+
+You should see this at the root:
+
+- `backend/` – Node.js + Express + MongoDB API
+- `frontend/` – React single‑page application
+- `README.md`, `PROJECT_SUMMARY.md`, `QUICK_START_GUIDE.txt`
+
+3. Backend Setup
+----------------
+
+1. Open a terminal and navigate to the backend folder:
+
+   - `cd backend`
+
+2. Install dependencies:
+
+   - `npm install`
+
+3. Create the `.env` file from the template:
+
+   - Copy `.env.example` to `.env`
+   - Fill in:
+     - `MONGO_URI` – your MongoDB connection string
+     - `JWT_SECRET` – a long random string
+     - `PORT` – e.g. `5000` (optional, defaults to 5000)
+
+4. Seed the database with sample data:
+
+   - `npm run seed`
+
+   This creates:
+   - Admin user: `admin@whiskaway.com` / `admin123`
+   - Sample user: `john@example.com` / `password123`
+   - Sample menu items, orders, and reservations
+
+5. Start the backend server:
+
+   - `npm start`
+
+   The API will run on `http://localhost:5000` (or the port you configured).
+
+4. Frontend Setup
+-----------------
+
+1. In a new terminal, navigate to the frontend folder:
+
+   - `cd frontend`
+
+2. Install dependencies:
+
+   - `npm install`
+
+3. Create the `.env` file from the template:
+
+   - Copy `.env.example` to `.env`
+   - Set:
+     - `REACT_APP_API_URL=http://localhost:5000/api`
+
+4. Start the React dev server:
+
+   - `npm start`
+
+   The app will open at `http://localhost:3000`.
+
+5. Login Credentials
+--------------------
+
+After seeding, you can use:
+
+- Admin
+  - Email: `admin@whiskaway.com`
+  - Password: `admin123`
+
+- Regular User
+  - Email: `john@example.com`
+  - Password: `password123`
+
+6. Key Flows to Try
+-------------------
+
+- Browse the menu, filter by category and location, and add items to the cart.
+- Checkout to place an order and then view it in **My Orders**.
+- Book a table in the **Reservations** page and see it in **My Reservations**.
+- Mark menu items as favorites and view them in **Profile**.
+- Log in as admin to access the **Admin Dashboard** and manage menu items, orders, and reservations.
+
+7. Troubleshooting
+------------------
+
+- If the frontend cannot reach the backend, check:
+  - The backend terminal for errors.
+  - That `REACT_APP_API_URL` matches your backend URL.
+  - CORS configuration in `backend/server.js`.
+
+- If MongoDB connection fails:
+  - Verify `MONGO_URI` in `backend/.env`.
+  - Ensure MongoDB is running and accessible from your machine.
+
+That’s it—you’re ready to explore **Whisk‑a‑Way – Beyond the plate**.
+

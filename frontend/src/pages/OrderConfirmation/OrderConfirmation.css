@@ -1,0 +1,59 @@
+.orderconf-shell {
+  display: flex;
+  justify-content: center;
+}
+
+.orderconf-card {
+  max-width: 520px;
+  width: 100%;
+}
+
+.orderconf-body {
+  margin-top: 1rem;
+}
+
+.orderconf-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.3rem;
+  font-size: 0.9rem;
+}
+
+.orderconf-missing {
+  font-size: 0.86rem;
+  color: var(--color-muted);
+}
+
+.orderconf-actions {
+  display: flex;
+  gap: 0.7rem;
+  margin-top: 1.2rem;
+}
+
+.orderconf-items {
+  margin-top: 0.8rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  padding-top: 0.5rem;
+  font-size: 0.86rem;
+}
+
+.orderconf-items-title {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.7rem;
+  color: var(--color-muted);
+  margin-bottom: 0.25rem;
+}
+
+.orderconf-items ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.orderconf-items li {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.2rem;
+}
+

@@ -1,0 +1,55 @@
+.profile-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+}
+
+.profile-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile-name {
+  font-size: 1.1rem;
+}
+
+.profile-email {
+  font-size: 0.86rem;
+  color: var(--color-muted);
+}
+
+.profile-links {
+  font-size: 0.84rem;
+  color: var(--color-muted);
+}
+
+.profile-favorites h2 {
+  margin-top: 0;
+  margin-bottom: 0.4rem;
+}
+
+.profile-muted {
+  font-size: 0.86rem;
+  color: var(--color-muted);
+}
+
+.profile-favorites-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.4rem 0 0;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.profile-fav-name {
+  font-size: 0.96rem;
+}
+
+.profile-fav-meta {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  display: flex;
+  gap: 0.6rem;
+}
+

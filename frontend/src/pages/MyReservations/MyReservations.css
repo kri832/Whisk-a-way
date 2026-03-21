@@ -1,0 +1,32 @@
+.myres-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+}
+
+.myres-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.myres-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.myres-label {
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.myres-value {
+  font-size: 0.9rem;
+}
+
+.myres-empty {
+  text-align: center;
+  color: var(--color-muted);
+}
+
