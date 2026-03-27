@@ -17,10 +17,13 @@ import Contact from './pages/Contact/Contact';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import AdminRoute from './components/AdminRoute/AdminRoute';
+import Toast from './components/Toast/Toast';
 import { useAuth } from './context/AuthContext';
+import { useCart } from './context/CartContext';
 
 function App() {
   const { loading } = useAuth();
+  const { toast, hideToast } = useCart();
   const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
@@ -123,6 +126,11 @@ function App() {
         </Routes>
       </main>
       <Footer />
+      <Toast
+        message={toast.message}
+        visible={toast.visible}
+        onClose={hideToast}
+      />
     </div>
   );
 }

@@ -1,12 +1,36 @@
 import React, { useState } from 'react';
+import api from '../../utils/api';
 import './Contact.css';
 
 function Contact() {
-  const [message, setMessage] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: '',
+  });
+  const [statusMessage, setStatusMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage('Thank you. We read every note and will be in touch if needed.');
+    setLoading(true);
+    setStatusMessage('');
+
+    try {
+      await api.post('/contacts', formData);
+      setStatusMessage('Thank you. We read every note and will be in touch if needed.');
+      setFormData({ name: '', email: '', phone: '', message: '' });
+    } catch (err) {
+      setStatusMessage('Unable to send message right now. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -22,19 +46,51 @@ function Contact() {
         <form className="card contact-form" onSubmit={handleSubmit}>
           <label>
             Name
-            <input type="text" required />
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
           </label>
           <label>
             Email
-            <input type="email" required />
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+          </label>
+          <label>
+            Phone
+            <input
+              type="tel"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              required
+            />
           </label>
           <label>
             Message
-            <textarea rows="4" required />
+            <textarea
+              name="message"
+              rows="4"
+              value={formData.message}
+              onChange={handleChange}
+              required
+            />
           </label>
-          {message && <p className="contact-message">{message}</p>}
-          <button type="submit" className="btn btn-primary contact-submit">
-            Send message
+          {statusMessage && <p className="contact-message">{statusMessage}</p>}
+          <button
+            type="submit"
+            className="btn btn-primary contact-submit"
+            disabled={loading}
+          >
+            {loading ? 'Sending…' : 'Send message'}
           </button>
         </form>
       </div>

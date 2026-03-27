@@ -7,6 +7,7 @@ import './Checkout.css';
 
 function Checkout() {
   const { items, summary, clearCart } = useCart();
+  const [customerName, setCustomerName] = useState('');
   const [notes, setNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
@@ -24,6 +25,12 @@ function Checkout() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!customerName.trim()) {
+      // eslint-disable-next-line no-alert
+      alert('Please enter your name.');
+      return;
+    }
+
     setSubmitting(true);
     try {
       const payloadItems = items.map((item) => ({
@@ -33,10 +40,15 @@ function Checkout() {
         quantity: item.quantity,
       }));
 
+      const gst = summary.total * 0.05;
+      const rawTotal = summary.total + gst;
+      const grandTotal = Math.round(rawTotal);
+
       const { data } = await api.post('/orders', {
         items: payloadItems,
-        totalAmount: summary.total,
+        totalAmount: grandTotal,
         notes,
+        customerName,
       });
 
       clearCart();
@@ -48,6 +60,11 @@ function Checkout() {
       setSubmitting(false);
     }
   };
+
+  const gst = summary.total * 0.05;
+  const rawTotal = summary.total + gst;
+  const grandTotal = Math.round(rawTotal);
+  const roundOff = grandTotal - rawTotal;
 
   return (
     <div className="checkout-shell">
@@ -61,6 +78,18 @@ function Checkout() {
       <form className="card checkout-form" onSubmit={handleSubmit}>
         <div className="checkout-form-row">
           <label>
+            Your Name
+            <input
+              type="text"
+              placeholder="Full name for the order"
+              value={customerName}
+              onChange={(e) => setCustomerName(e.target.value)}
+              required
+            />
+          </label>
+        </div>
+        <div className="checkout-form-row">
+          <label>
             Notes for the kitchen
             <input
               type="text"
@@ -72,12 +101,22 @@ function Checkout() {
         </div>
         <div className="checkout-summary">
           <div className="checkout-summary-row">
-            <span>Items</span>
-            <span>{summary.itemCount}</span>
+            <span>Subtotal</span>
+            <span>{formatINR(summary.total)}</span>
           </div>
           <div className="checkout-summary-row">
-            <span>Total</span>
-            <span>{formatINR(summary.total)}</span>
+            <span>GST (5%)</span>
+            <span>{formatINR(gst)}</span>
+          </div>
+          {roundOff !== 0 && (
+            <div className="checkout-summary-row checkout-round-off">
+              <span>Rounding</span>
+              <span>{roundOff > 0 ? '+' : ''}{formatINR(roundOff)}</span>
+            </div>
+          )}
+          <div className="checkout-summary-row checkout-grand-total">
+            <span>Grand Total</span>
+            <span>{formatINR(grandTotal)}</span>
           </div>
         </div>
         <button

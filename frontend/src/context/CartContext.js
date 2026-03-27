@@ -1,11 +1,21 @@
-import React, { createContext, useContext, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
 
 const CartContext = createContext(null);
 
 export function CartProvider({ children }) {
   const [items, setItems] = useState([]);
+  const [toast, setToast] = useState({ visible: false, message: '' });
 
-  const addItem = (menuItem, quantity = 1) => {
+  const showToast = useCallback((message) => {
+    setToast({ visible: true, message });
+    // Clear any existing timer
+    if (window.toastTimer) clearTimeout(window.toastTimer);
+    window.toastTimer = setTimeout(() => {
+      setToast({ visible: false, message: '' });
+    }, 3000);
+  }, []);
+
+  const addItem = useCallback((menuItem, quantity = 1) => {
     setItems((current) => {
       const existing = current.find((i) => i._id === menuItem._id);
       if (existing) {
@@ -15,19 +25,20 @@ export function CartProvider({ children }) {
       }
       return [...current, { ...menuItem, quantity }];
     });
-  };
+    showToast(`${menuItem.name} added to cart`);
+  }, [showToast]);
 
-  const removeItem = (id) => {
+  const removeItem = useCallback((id) => {
     setItems((current) => current.filter((i) => i._id !== id));
-  };
+  }, []);
 
-  const updateQuantity = (id, quantity) => {
+  const updateQuantity = useCallback((id, quantity) => {
     setItems((current) =>
       current.map((i) => (i._id === id ? { ...i, quantity: Math.max(1, quantity) } : i))
     );
-  };
+  }, []);
 
-  const clearCart = () => setItems([]);
+  const clearCart = useCallback(() => setItems([]), []);
 
   const summary = useMemo(() => {
     const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -35,14 +46,19 @@ export function CartProvider({ children }) {
     return { itemCount, total };
   }, [items]);
 
-  const value = {
-    items,
-    addItem,
-    removeItem,
-    updateQuantity,
-    clearCart,
-    summary,
-  };
+  const value = useMemo(
+    () => ({
+      items,
+      addItem,
+      removeItem,
+      updateQuantity,
+      clearCart,
+      summary,
+      toast,
+      hideToast: () => setToast({ visible: false, message: '' }),
+    }),
+    [items, summary, toast]
+  );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

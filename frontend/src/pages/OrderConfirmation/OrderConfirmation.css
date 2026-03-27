@@ -54,6 +54,6 @@
 .orderconf-items li {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.4rem;
 }
 

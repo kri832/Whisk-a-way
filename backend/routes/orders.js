@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post('/', auth(), async (req, res) => {
   try {
-    const { items, totalAmount, location, notes } = req.body;
+    const { items, totalAmount, location, notes, customerName } = req.body;
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ message: 'Order must contain at least one item' });
@@ -14,6 +14,7 @@ router.post('/', auth(), async (req, res) => {
 
     const order = await Order.create({
       user: req.user.id,
+      customerName,
       items,
       totalAmount,
       location,

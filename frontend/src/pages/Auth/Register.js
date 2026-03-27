@@ -6,9 +6,9 @@ import './Login.css';
 function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
-  const [name, setName] = useState('John Doe');
-  const [email, setEmail] = useState('john@gmail.com');
-  const [password, setPassword] = useState('password123');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 

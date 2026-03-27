@@ -25,6 +25,11 @@ const orderSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
+    customerName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     items: [orderItemSchema],
     status: {
       type: String,

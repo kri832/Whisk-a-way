@@ -11,6 +11,7 @@ const menuRoutes = require('./routes/menu');
 const orderRoutes = require('./routes/orders');
 const reservationRoutes = require('./routes/reservations');
 const userRoutes = require('./routes/users');
+const contactRoutes = require('./routes/contacts');
 
 const app = express();
 
@@ -52,6 +53,7 @@ app.use('/api/menu', menuRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/reservations', reservationRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/contacts', contactRoutes);
 
 const PORT = process.env.PORT || 5001;
 

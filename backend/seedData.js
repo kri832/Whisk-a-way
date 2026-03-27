@@ -8,6 +8,7 @@ const User = require('./models/User');
 const MenuItem = require('./models/MenuItem');
 const Order = require('./models/Order');
 const Reservation = require('./models/Reservation');
+const Contact = require('./models/Contact');
 
 async function seed() {
   try {
@@ -18,6 +19,7 @@ async function seed() {
       MenuItem.deleteMany({}),
       Order.deleteMany({}),
       Reservation.deleteMany({}),
+      Contact.deleteMany({}),
     ]);
 
     const adminPassword = await bcrypt.hash('admin123', 10);
@@ -91,6 +93,7 @@ async function seed() {
 
     await Order.create({
       user: john._id,
+      customerName: john.name,
       items: [
         {
           menuItem: menuItems[0]._id,
@@ -110,6 +113,21 @@ async function seed() {
       notes: 'Leave at reception if late.',
       status: 'completed',
     });
+
+    await Contact.create([
+      {
+        name: 'Sarah Miller',
+        email: 'sarah.miller@gmail.com',
+        phone: '+1 555 123 4567',
+        message: 'Do you offer private dining for groups of 12? Looking for a celebration venue.',
+      },
+      {
+        name: 'James Wilson',
+        email: 'j.wilson@yahoo.com',
+        phone: '+1 555 987 6543',
+        message: 'The Midnight Maroon Risotto was incredible. Just wanted to let the chef know!',
+      },
+    ]);
 
     // eslint-disable-next-line no-console
     console.log('Database seeded successfully');

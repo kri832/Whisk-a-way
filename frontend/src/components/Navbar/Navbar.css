@@ -30,9 +30,9 @@
 .nav-logo {
   width: auto;
   height: 80px;
-  border-radius: 20px;
+  border-radius: 25px;
   object-fit: contain;
-  filter: drop-shadow(0 4px 12px rgba(197, 160, 89, 0.4));
+  filter: drop-shadow(0 10px 15px rgba(197, 160, 89, 0.4));
 }
 
 .nav-brand-text {

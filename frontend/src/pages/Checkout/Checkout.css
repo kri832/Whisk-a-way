@@ -50,10 +50,28 @@
 .checkout-summary-row {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.checkout-round-off {
+  font-style: italic;
+  color: var(--color-muted);
+  font-size: 0.8rem;
+}
+
+.checkout-grand-total {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 0.6rem;
+  margin-top: 0.4rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--color-accent);
 }
 
 .checkout-submit {
   align-self: flex-end;
+  margin-top: 1rem;
+  padding-inline: 2.5rem;
 }
 

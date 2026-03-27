@@ -8,6 +8,7 @@ function AdminDashboard() {
   const [reservations, setReservations] = useState([]);
   const [users, setUsers] = useState([]);
   const [menuItems, setMenuItems] = useState([]);
+  const [contacts, setContacts] = useState([]);
 
   const [newUser, setNewUser] = useState({
     name: '',
@@ -41,6 +42,10 @@ function AdminDashboard() {
       .get('/menu')
       .then((res) => setMenuItems(res.data))
       .catch(() => setMenuItems([]));
+    api
+      .get('/contacts')
+      .then((res) => setContacts(res.data))
+      .catch(() => setContacts([]));
   }, []);
 
   const handleUserField = (field, value) => {
@@ -70,6 +75,20 @@ function AdminDashboard() {
     } catch (err) {
       // eslint-disable-next-line no-alert
       alert(err.response?.data?.message || 'Unable to create user right now.');
+    }
+  };
+
+  const deleteUser = async (id) => {
+    // eslint-disable-next-line no-alert
+    const ok = window.confirm('Permanently remove this user account?');
+    if (!ok) return;
+
+    try {
+      await api.delete(`/users/${id}`);
+      setUsers((prev) => prev.filter((u) => u._id !== id));
+    } catch (err) {
+      // eslint-disable-next-line no-alert
+      alert(err.response?.data?.message || 'Unable to remove user right now.');
     }
   };
 
@@ -115,6 +134,16 @@ function AdminDashboard() {
     } catch {
       // eslint-disable-next-line no-alert
       alert('Unable to update order status.');
+    }
+  };
+
+  const updateReservationStatus = async (id, status) => {
+    try {
+      const { data } = await api.patch(`/reservations/${id}/status`, { status });
+      setReservations((prev) => prev.map((r) => (r._id === id ? data : r)));
+    } catch {
+      // eslint-disable-next-line no-alert
+      alert('Unable to update reservation status.');
     }
   };
 
@@ -171,12 +200,22 @@ function AdminDashboard() {
             <span>Name</span>
             <span>Email</span>
             <span>Role</span>
+            <span>Action</span>
           </div>
           {users.map((u) => (
             <div key={u._id} className="admin-table-row">
               <span>{u.name}</span>
               <span>{u.email}</span>
               <span>{u.role}</span>
+              <span>
+                <button
+                  type="button"
+                  className="admin-danger-link"
+                  onClick={() => deleteUser(u._id)}
+                >
+                  Remove
+                </button>
+              </span>
             </div>
           ))}
           {users.length === 0 && (
@@ -271,6 +310,7 @@ function AdminDashboard() {
             <span>Date</span>
             <span>Guests</span>
             <span>Status</span>
+            <span>Actions</span>
           </div>
           {reservations.map((r) => (
             <div key={r._id} className="admin-table-row">
@@ -280,6 +320,17 @@ function AdminDashboard() {
               </span>
               <span>{r.partySize}</span>
               <span>{r.status}</span>
+              <span>
+                {r.status === 'pending' && (
+                  <button
+                    type="button"
+                    className="admin-action-btn"
+                    onClick={() => updateReservationStatus(r._id, 'confirmed')}
+                  >
+                    Confirm
+                  </button>
+                )}
+              </span>
             </div>
           ))}
           {reservations.length === 0 && (
@@ -319,6 +370,15 @@ function AdminDashboard() {
               <span>{formatINR(o.totalAmount)}</span>
               <span>{o.status}</span>
               <span>
+                {o.status === 'pending' && (
+                  <button
+                    type="button"
+                    className="admin-action-btn"
+                    onClick={() => updateOrderStatus(o._id, 'confirmed')}
+                  >
+                    Accept
+                  </button>
+                )}
                 <select
                   value={o.status}
                   onChange={(e) => updateOrderStatus(o._id, e.target.value)}
@@ -336,6 +396,37 @@ function AdminDashboard() {
           {orders.length === 0 && (
             <div className="admin-table-empty">
               No orders yet. Once guests check out, you&apos;ll see them here.
+            </div>
+          )}
+        </div>
+      </section>
+
+      <section className="card admin-section">
+        <h2>Contact Responses</h2>
+        <p className="admin-subtitle">
+          Read what guests are saying through the contact form.
+        </p>
+        <div className="admin-table admin-contacts">
+          <div className="admin-table-header">
+            <span>Guest</span>
+            <span>Contact Info</span>
+            <span>Message</span>
+            <span>Date</span>
+          </div>
+          {contacts.map((c) => (
+            <div key={c._id} className="admin-table-row">
+              <span>{c.name}</span>
+              <div className="admin-contact-info">
+                <span>{c.email}</span>
+                <span>{c.phone}</span>
+              </div>
+              <span className="admin-contact-message">{c.message}</span>
+              <span>{new Date(c.createdAt).toLocaleDateString()}</span>
+            </div>
+          ))}
+          {contacts.length === 0 && (
+            <div className="admin-table-empty">
+              No contact responses yet.
             </div>
           )}
         </div>

@@ -150,10 +150,10 @@ button {
 
 .loading-logo {
   width: auto;
-  height: 100px;
+  height: 160px;
   border-radius: 20px;
   object-fit: contain;
-  filter: drop-shadow(0 4px 12px rgba(197, 160, 89, 0.4));
+  filter: drop-shadow(0 10px 15px rgba(197, 160, 89, 0.4));
 }
 
 .loading-text {
@@ -199,17 +199,17 @@ button {
 
 .splash-logo {
   width: auto;
-  height: 180px;
-  border-radius: 20px;
+  height: 250px;
+  border-radius: 40px;
   object-fit: contain;
-  filter: drop-shadow(0 4px 12px rgba(197, 160, 89, 0.4));
+  filter: drop-shadow(0 13px 18px rgba(197, 160, 89, 0.4));
   z-index: 2;
 }
 
 .splash-text {
   font-family: 'Playfair Display', serif;
   font-size: 1.8rem;
-  margin-top: 1.8rem;
+  margin-top: 3.5rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
   color: var(--color-accent);
