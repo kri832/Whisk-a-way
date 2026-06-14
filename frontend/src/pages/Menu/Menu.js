@@ -55,6 +55,17 @@ function Menu() {
     [items, category, search]
   );
 
+  const groupedItems = useMemo(() => {
+    const groups = {};
+    filtered.forEach((item) => {
+      if (!groups[item.category]) {
+        groups[item.category] = [];
+      }
+      groups[item.category].push(item);
+    });
+    return groups;
+  }, [filtered]);
+
   return (
     <div className="menu-shell">
       <header className="menu-header">
@@ -94,50 +105,58 @@ function Menu() {
         </div>
       </div>
 
-      <section className="grid menu-grid">
-        {filtered.map((item) => (
-            <article key={item._id} className="card menu-card">
-              <div className="menu-card-header">
-                <div>
-                  <h3>{item.name}</h3>
-                  <div className="menu-card-meta">
-                    <span>{item.category}</span>
-                    <span>{item.location}</span>
-                    {item.isSpecial && <span className="menu-chip">Chef&apos;s pick</span>}
+      <div className="menu-sections">
+        {Object.entries(groupedItems).map(([catName, catItems]) => (
+          <section key={catName} className="menu-category-section">
+            <h2 className="menu-category-title">{catName}</h2>
+            <div className="grid menu-grid">
+              {catItems.map((item) => (
+                <article key={item._id} className="card menu-card">
+                  <div className="menu-card-content">
+                    <div className="menu-card-header">
+                      <div className="menu-card-title-group">
+                        <h3>{item.name}</h3>
+                        <div className="menu-card-meta">
+                          <span>{item.location}</span>
+                          {item.isSpecial && <span className="menu-chip">Chef&apos;s pick</span>}
+                        </div>
+                      </div>
+                      <div className="menu-price">{formatINR(item.price)}</div>
+                    </div>
+                    <p className="menu-desc">{item.description}</p>
                   </div>
-                </div>
-                <div className="menu-price">{formatINR(item.price)}</div>
-              </div>
-              <p className="menu-desc">{item.description}</p>
-              <div className="menu-card-footer">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={() => addItem(item)}
-                >
-                  Add to cart
-                </button>
-                <button
-                  type="button"
-                  className="menu-fav-btn"
-                  onClick={() => toggleFavorite(item._id)}
-                >
-                  ☆ Save
-                </button>
-              </div>
-            </article>
+                  <div className="menu-card-footer">
+                    <button
+                      type="button"
+                      className="btn btn-primary menu-add-btn"
+                      onClick={() => addItem(item)}
+                    >
+                      Add to cart
+                    </button>
+                    <button
+                      type="button"
+                      className="menu-fav-btn"
+                      onClick={() => toggleFavorite(item._id)}
+                    >
+                      ☆ Save
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
         ))}
+
         {filtered.length === 0 && (
           <div className="card menu-empty">
             {items.length === 0
-              ? 'No menu items yet. Start the backend, run "npm run seed" in the backend folder, then refresh. See SETUP_CHECKLIST.txt if you need help.'
+              ? 'No menu items yet. Start the backend, run "npm run seed" in the backend folder, then refresh.'
               : 'Nothing matches those filters yet. Try loosening the search or category.'}
           </div>
         )}
-      </section>
+      </div>
     </div>
   );
 }
 
 export default Menu;
-

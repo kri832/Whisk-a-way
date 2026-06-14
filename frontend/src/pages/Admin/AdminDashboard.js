@@ -25,11 +25,20 @@ function AdminDashboard() {
     isSpecial: false,
   });
 
+  // Orders pagination and filtering
+  const [ordersPage, setOrdersPage] = useState(1);
+  const [ordersPerPage] = useState(15);
+  const [dateFilter, setDateFilter] = useState('');
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalOrders: 0,
+    hasNextPage: false,
+    hasPrevPage: false,
+  });
+
+  // Load other data on mount
   useEffect(() => {
-    api
-      .get('/orders')
-      .then((res) => setOrders(res.data))
-      .catch(() => setOrders([]));
     api
       .get('/reservations')
       .then((res) => setReservations(res.data))
@@ -47,6 +56,59 @@ function AdminDashboard() {
       .then((res) => setContacts(res.data))
       .catch(() => setContacts([]));
   }, []);
+
+  // Fetch orders with pagination and filters
+  const fetchOrders = (page = 1, date = '') => {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: ordersPerPage.toString(),
+    });
+    
+    if (date) {
+      params.append('date', date);
+    }
+
+    api
+      .get(`/orders?${params.toString()}`)
+      .then((res) => {
+        setOrders(res.data.orders);
+        setPagination(res.data.pagination);
+      })
+      .catch((err) => {
+        console.error('Error fetching orders:', err);
+        setOrders([]);
+        setPagination({
+          currentPage: 1,
+          totalPages: 1,
+          totalOrders: 0,
+          hasNextPage: false,
+          hasPrevPage: false,
+        });
+      });
+  };
+
+  // Initial load of orders
+  useEffect(() => {
+    fetchOrders(1, dateFilter);
+  }, [dateFilter]);
+
+  // Handle page change
+  const handlePageChange = (newPage) => {
+    setOrdersPage(newPage);
+    fetchOrders(newPage, dateFilter);
+  };
+
+  // Handle date filter change
+  const handleDateFilterChange = (e) => {
+    setDateFilter(e.target.value);
+    setOrdersPage(1); // Reset to first page when filter changes
+  };
+
+  // Clear date filter
+  const clearDateFilter = () => {
+    setDateFilter('');
+    setOrdersPage(1);
+  };
 
   const handleUserField = (field, value) => {
     setNewUser((prev) => ({ ...prev, [field]: value }));
@@ -130,8 +192,10 @@ function AdminDashboard() {
   const updateOrderStatus = async (id, status) => {
     try {
       const { data } = await api.patch(`/orders/${id}/status`, { status });
+      // Update the order in the current list
       setOrders((prev) => prev.map((o) => (o._id === id ? data : o)));
-    } catch {
+    } catch (err) {
+      console.error('Error updating order status:', err);
       // eslint-disable-next-line no-alert
       alert('Unable to update order status.');
     }
@@ -346,59 +410,130 @@ function AdminDashboard() {
         <p className="admin-subtitle">
           Track what guests have ordered and update the status from the pass.
         </p>
+        
+        {/* Date Filter */}
+        <div className="orders-filter">
+          <div className="filter-group">
+            <label htmlFor="date-filter">Filter by Date:</label>
+            <input
+              type="date"
+              id="date-filter"
+              value={dateFilter}
+              onChange={handleDateFilterChange}
+              className="date-filter-input"
+            />
+            {dateFilter && (
+              <button
+                type="button"
+                className="btn btn-secondary clear-filter-btn"
+                onClick={clearDateFilter}
+              >
+                Clear Filter
+              </button>
+            )}
+          </div>
+          <div className="orders-summary">
+            <span className="orders-count">
+              Showing {orders.length} of {pagination.totalOrders} order{pagination.totalOrders !== 1 ? 's' : ''}
+              {dateFilter && ` for ${new Date(dateFilter + 'T00:00:00').toLocaleDateString()}`}
+            </span>
+          </div>
+        </div>
+
         <div className="admin-table admin-orders">
           <div className="admin-table-header">
             <span>Guest</span>
             <span>Items Ordered</span>
+            <span>Date & Time</span>
             <span>Total</span>
+            <span>Payment</span>
             <span>Status</span>
             <span>Update</span>
           </div>
-          {orders.map((o) => (
-            <div key={o._id} className="admin-table-row">
-              <span>{o.user?.name || 'Guest'}</span>
-              <div className="admin-order-items">
-                {o.items?.map((item, idx) => (
-                  <div key={idx} className="admin-order-item">
-                    <span>
-                      <span className="admin-item-qty">{item.quantity}x</span>
-                      {item.name}
-                    </span>
-                  </div>
-                ))}
-              </div>
-              <span>{formatINR(o.totalAmount)}</span>
-              <span>{o.status}</span>
-              <span>
-                {o.status === 'pending' && (
-                  <button
-                    type="button"
-                    className="admin-action-btn"
-                    onClick={() => updateOrderStatus(o._id, 'confirmed')}
+          {orders.length > 0 ? orders.map((o) => {
+            const orderDate = new Date(o.createdAt);
+            const formattedDate = orderDate.toLocaleDateString();
+            const formattedTime = orderDate.toLocaleTimeString();
+            
+            return (
+              <div key={o._id} className="admin-table-row">
+                <span>{o.user?.name || 'Guest'}</span>
+                <div className="admin-order-items">
+                  {o.items?.map((item, idx) => (
+                    <div key={idx} className="admin-order-item">
+                      <span>
+                        <span className="admin-item-qty">{item.quantity}x</span>
+                        {item.name}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <div className="order-datetime">
+                  <span className="order-date">{formattedDate}</span>
+                  <span className="order-time">{formattedTime}</span>
+                </div>
+                <span>{formatINR(o.totalAmount)}</span>
+                <span>
+                  <span className={`payment-tag payment-${o.paymentMethod || 'cash'}`}>
+                    {(o.paymentMethod || 'cash').toUpperCase()}
+                  </span>
+                </span>
+                <span>{o.status}</span>
+                <span>
+                  {o.status === 'pending' && (
+                    <button
+                      type="button"
+                      className="admin-action-btn"
+                      onClick={() => updateOrderStatus(o._id, 'confirmed')}
+                    >
+                      Accept
+                    </button>
+                  )}
+                  <select
+                    value={o.status}
+                    onChange={(e) => updateOrderStatus(o._id, e.target.value)}
                   >
-                    Accept
-                  </button>
-                )}
-                <select
-                  value={o.status}
-                  onChange={(e) => updateOrderStatus(o._id, e.target.value)}
-                >
-                  <option value="pending">Pending</option>
-                  <option value="confirmed">Confirmed</option>
-                  <option value="preparing">Preparing</option>
-                  <option value="ready">Ready</option>
-                  <option value="completed">Completed</option>
-                  <option value="cancelled">Cancelled</option>
-                </select>
-              </span>
-            </div>
-          ))}
-          {orders.length === 0 && (
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="preparing">Preparing</option>
+                    <option value="ready">Ready</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                </span>
+              </div>
+            );
+          }) : (
             <div className="admin-table-empty">
-              No orders yet. Once guests check out, you&apos;ll see them here.
+              {dateFilter ? 'No orders found for this date.' : 'No orders yet. Once guests check out, you\'ll see them here.'}
             </div>
           )}
         </div>
+
+        {/* Pagination Controls */}
+        {pagination.totalPages > 1 && (
+          <div className="pagination-controls">
+            <button
+              className="btn btn-pagination"
+              disabled={!pagination.hasPrevPage}
+              onClick={() => handlePageChange(pagination.currentPage - 1)}
+            >
+              ← Previous
+            </button>
+            
+            <div className="pagination-info">
+              Page {pagination.currentPage} of {pagination.totalPages}
+            </div>
+            
+            <button
+              className="btn btn-pagination"
+              disabled={!pagination.hasNextPage}
+              onClick={() => handlePageChange(pagination.currentPage + 1)}
+            >
+              Next →
+            </button>
+          </div>
+        )}
       </section>
 
       <section className="card admin-section">
@@ -436,4 +571,3 @@ function AdminDashboard() {
 }
 
 export default AdminDashboard;
-

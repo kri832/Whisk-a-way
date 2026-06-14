@@ -27,6 +27,10 @@ function OrderConfirmation() {
                 <span>{order.status}</span>
               </div>
               <div className="orderconf-row">
+                <span>Payment Method</span>
+                <span className="payment-method-display">{(order.paymentMethod || 'cash').toUpperCase()}</span>
+              </div>
+              <div className="orderconf-row">
                 <span>Total</span>
                 <span>{formatINR(order.totalAmount)}</span>
               </div>

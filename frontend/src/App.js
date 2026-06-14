@@ -8,6 +8,8 @@ import Cart from './pages/Cart/Cart';
 import Checkout from './pages/Checkout/Checkout';
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
+import EmailVerification from './pages/Auth/EmailVerification';
+import VerifyEmailPrompt from './pages/Auth/VerifyEmailPrompt';
 import Profile from './pages/Profile/Profile';
 import MyOrders from './pages/MyOrders/MyOrders';
 import MyReservations from './pages/MyReservations/MyReservations';
@@ -73,6 +75,8 @@ function App() {
           />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/verify-email/:token" element={<EmailVerification />} />
+          <Route path="/verify-email-prompt" element={<VerifyEmailPrompt />} />
           <Route
             path="/profile"
             element={

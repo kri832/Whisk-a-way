@@ -30,6 +30,12 @@ const userSchema = new mongoose.Schema(
         ref: 'MenuItem',
       },
     ],
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: String,
+    verificationTokenExpires: Date,
   },
   { timestamps: true }
 );

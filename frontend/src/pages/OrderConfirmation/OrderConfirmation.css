@@ -57,3 +57,10 @@
   margin-bottom: 0.4rem;
 }
 
+.payment-method-display {
+  font-weight: 600;
+  color: var(--color-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+

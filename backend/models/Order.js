@@ -49,6 +49,11 @@ const orderSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    paymentMethod: {
+      type: String,
+      enum: ['cash', 'card', 'upi'],
+      default: 'cash',
+    },
   },
   { timestamps: true }
 );

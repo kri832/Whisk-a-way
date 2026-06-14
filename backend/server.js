@@ -15,7 +15,12 @@ const contactRoutes = require('./routes/contacts');
 
 const app = express();
 
-const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001'];
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://127.0.0.1:3000',
+  'http://127.0.0.1:3001',
+];
 
 app.use(
   cors({
@@ -57,9 +62,13 @@ app.use('/api/contacts', contactRoutes);
 
 const PORT = process.env.PORT || 5001;
 
+console.log('Attempting to connect to MongoDB...');
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(process.env.MONGO_URI, {
+    serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+  })
   .then(() => {
+    console.log('Successfully connected to MongoDB');
     app.listen(PORT, () => {
       // eslint-disable-next-line no-console
       console.log(`Whisk-a-Way API listening on port ${PORT}`);

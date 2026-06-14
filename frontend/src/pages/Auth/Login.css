@@ -37,6 +37,32 @@
 .auth-error {
   font-size: 0.82rem;
   color: #ffb0b0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.auth-resend-btn {
+  background: rgba(var(--color-accent-rgb), 0.15);
+  border: 1px solid rgba(var(--color-accent-rgb), 0.3);
+  color: var(--color-accent);
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  align-self: flex-start;
+  margin-top: 0.3rem;
+}
+
+.auth-resend-btn:hover:not(:disabled) {
+  background: rgba(var(--color-accent-rgb), 0.25);
+  border-color: var(--color-accent);
+}
+
+.auth-resend-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .auth-submit {

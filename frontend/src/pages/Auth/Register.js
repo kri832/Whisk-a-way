@@ -28,7 +28,8 @@ function Register() {
 
     try {
       await register({ name, email, password });
-      navigate('/', { replace: true });
+      // Redirect to verification prompt instead of home
+      navigate('/verify-email-prompt', { replace: true, state: { email } });
     } catch (err) {
       setError(err.response?.data?.message || 'Unable to register right now. Try a different email.');
     } finally {
