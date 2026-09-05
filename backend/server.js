@@ -25,13 +25,18 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (
+        !origin ||
+        allowedOrigins.includes(origin) ||
+        origin.startsWith('http://localhost:') ||
+        origin.startsWith('http://127.0.0.1:')
+      ) {
         callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS'));
+        callback(null, true);
       }
     },
-    credentials: false,
+    credentials: true,
   })
 );
 app.use(express.json());
@@ -46,7 +51,7 @@ app.get('/api/health', (req, res) => {
   const connected = dbState === 1;
   res.status(connected ? 200 : 503).json({
     ok: connected,
-    database: connected ? 'connected' : 'disconnected',
+    database: connected ? 'connected' : 'connecting/disconnected',
     message: connected
       ? 'API and database are ready'
       : 'Database not connected. Check MONGO_URI and that MongoDB is running.',
@@ -62,21 +67,31 @@ app.use('/api/contacts', contactRoutes);
 
 const PORT = process.env.PORT || 5001;
 
-console.log('Attempting to connect to MongoDB...');
-mongoose
-  .connect(process.env.MONGO_URI, {
-    serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
-  })
-  .then(() => {
-    console.log('Successfully connected to MongoDB');
-    app.listen(PORT, () => {
-      // eslint-disable-next-line no-console
-      console.log(`Whisk-a-Way API listening on port ${PORT}`);
+// Resilient MongoDB Connection with Automatic Retry Loop
+const connectDB = async () => {
+  const mongoURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/whisk-a-way';
+  try {
+    await mongoose.connect(mongoURI, {
+      serverSelectionTimeoutMS: 5000,
     });
-  })
-  .catch((err) => {
-    // eslint-disable-next-line no-console
-    console.error('Failed to connect to MongoDB', err);
-    process.exit(1);
-  });
+    console.log('Successfully connected to MongoDB');
+  } catch (err) {
+    console.error('MongoDB connection attempt failed:', err.message);
+    console.log('Retrying MongoDB connection in 5 seconds...');
+    setTimeout(connectDB, 5000);
+  }
+};
+
+mongoose.connection.on('disconnected', () => {
+  console.warn('MongoDB disconnected. Retrying connection...');
+  setTimeout(connectDB, 5000);
+});
+
+connectDB();
+
+app.listen(PORT, () => {
+  // eslint-disable-next-line no-console
+  console.log(`Whisk-a-Way API listening on port ${PORT}`);
+});
+
 

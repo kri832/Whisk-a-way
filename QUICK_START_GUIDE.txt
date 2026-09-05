@@ -21,39 +21,23 @@ You should see this at the root:
 - `frontend/` – React single‑page application
 - `README.md`, `PROJECT_SUMMARY.md`, `QUICK_START_GUIDE.txt`
 
-3. Backend Setup
-----------------
+3. Quick Start (Root Command - Recommended)
+--------------------------------------------
 
-1. Open a terminal and navigate to the backend folder:
+1. Install dependencies across backend & frontend:
+   `npm run install-all`
 
-   - `cd backend`
+2. Seed the database with sample data:
+   `npm run seed`
 
-2. Install dependencies:
+   Seeded accounts (all pre-verified):
+   - Admin: `admin@whiskaway.com` / `admin123` or `admin@gmail.com` / `admin123`
+   - User: `john@example.com` / `password123` or `john@gmail.com` / `password123`
 
-   - `npm install`
+3. Start full application:
+   `npm start`
 
-3. Create the `.env` file from the template:
-
-   - Copy `.env.example` to `.env`
-   - Fill in:
-     - `MONGO_URI` – your MongoDB connection string
-     - `JWT_SECRET` – a long random string
-     - `PORT` – e.g. `5000` (optional, defaults to 5000)
-
-4. Seed the database with sample data:
-
-   - `npm run seed`
-
-   This creates:
-   - Admin user: `admin@whiskaway.com` / `admin123`
-   - Sample user: `john@example.com` / `password123`
-   - Sample menu items, orders, and reservations
-
-5. Start the backend server:
-
-   - `npm start`
-
-   The API will run on `http://localhost:5000` (or the port you configured).
+   The app will run at `http://localhost:3000` with the API on `http://localhost:5001`.
 
 4. Frontend Setup
 -----------------

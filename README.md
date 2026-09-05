@@ -82,14 +82,24 @@ Tech Stack
 Running the Project
 -------------------
 
-See `QUICK_START_GUIDE.txt` for a concise, step‑by‑step setup. In short:
+You can run the entire application from the workspace root with a single command:
 
-1. Configure `.env` files for backend and frontend using the provided `.env.example` templates.
-2. Install dependencies and run the backend.
-3. Install dependencies and run the frontend.
-4. Seed the database with sample data using `backend/seedData.js`.
+1. **Install all dependencies:**
+   ```bash
+   npm run install-all
+   ```
 
-Once running, you can log in with the sample accounts listed in `FILE_STRUCTURE.txt` (or in `QUICK_START_GUIDE.txt`) and explore the full Whisk‑a‑Way experience.
+2. **Seed the database (Admin: `admin@whiskaway.com` / `admin123` or `admin@gmail.com` / `admin123`):**
+   ```bash
+   npm run seed
+   ```
+
+3. **Start both backend & frontend concurrently:**
+   ```bash
+   npm start
+   ```
+
+The frontend will open at `http://localhost:3000` and the API runs on `http://localhost:5001`.
 
 License
 -------

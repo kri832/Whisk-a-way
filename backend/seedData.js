@@ -12,7 +12,10 @@ const Contact = require('./models/Contact');
 
 async function seed() {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
+    const mongoURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/whisk-a-way';
+    await mongoose.connect(mongoURI, {
+      serverSelectionTimeoutMS: 5000,
+    });
 
     await Promise.all([
       User.deleteMany({}),
@@ -25,18 +28,34 @@ async function seed() {
     const adminPassword = await bcrypt.hash('admin123', 10);
     const userPassword = await bcrypt.hash('password123', 10);
 
-    const [admin, john] = await User.create([
+    const [admin, adminGmail, john, johnGmail] = await User.create([
       {
         name: 'Admin',
+        email: 'admin@whiskaway.com',
+        password: adminPassword,
+        role: 'admin',
+        isVerified: true,
+      },
+      {
+        name: 'Admin (Gmail)',
         email: 'admin@gmail.com',
         password: adminPassword,
         role: 'admin',
+        isVerified: true,
       },
       {
         name: 'John Doe',
+        email: 'john@example.com',
+        password: userPassword,
+        role: 'user',
+        isVerified: true,
+      },
+      {
+        name: 'John Doe (Gmail)',
         email: 'john@gmail.com',
         password: userPassword,
         role: 'user',
+        isVerified: true,
       },
     ]);
 
@@ -131,6 +150,7 @@ async function seed() {
 
     // eslint-disable-next-line no-console
     console.log('Database seeded successfully');
+    await mongoose.connection.close();
     process.exit(0);
   } catch (err) {
     // eslint-disable-next-line no-console
